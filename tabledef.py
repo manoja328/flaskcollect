@@ -1,5 +1,5 @@
 from settings import SQLALCHEMY_DATABASE_URI
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine , func
 from sqlalchemy import Column, Integer, String , Text
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -23,7 +23,15 @@ class User(Base):
   def __repr__(self):
     return '<User %r>' % self.username
 
+class File(Base):
+  __tablename__ = "files"
 
+  id = Column(Integer, primary_key=True)
+  filename = Column(String(80))
+  istrain = Column(Integer)
+
+  def __repr__(self):
+    return '<User {}>'.format(self.filename,self.annotcount)
 
 class Complex(Base):
     

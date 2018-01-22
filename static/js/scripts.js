@@ -11,6 +11,10 @@ function error(type) {
   $("."+type).css("border-color", "#E14448")
 }
 
+function showred(type) {
+  $("#"+type).css("border-color", "#E14448");
+}
+
 var login = function() {
   $.post({
     type: "POST",
@@ -57,7 +61,7 @@ $(document).ready(function() {
       success: function(response) {
         var status = JSON.parse(response)['status']
         if (status === 'QA successful') {location.reload()}
-        else {message(status, shake=true, id="signup-box")}
+        else {message(status, shake=false, id="question"); showred('question') ;showred('answer')}
       }
     })
   })

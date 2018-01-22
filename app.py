@@ -7,6 +7,8 @@ import os
 from werkzeug.utils import secure_filename
 from collections import Counter
 from numpy.random import choice
+import spacy
+parser = spacy.load('en') 
 
 UPLOAD_FOLDER = '/home/manoj/flaskcollect/static/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -15,6 +17,33 @@ engine = db_connect()
 app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+
+with  open('static/train.txt') as f:
+    train = f.readlines()
+
+for i,_ in enumerate(train):
+    train[i] = train[i].strip()
+
+with  open('static/val.txt') as f:
+    val = f.readlines()
+
+for i,_ in enumerate(val):
+    val[i] = val[i].strip()
+    
+
+Ntr = len(train)
+Nval = len(val)
+
+
+def issimple(sentence):
+    p = list(parser(sentence).noun_chunks)
+    #print (p)
+    if len(p) <= 1 :
+        return True
+    return False
+
 
 
 def allowed_file(filename):
@@ -28,8 +57,20 @@ def allowed_file(filename):
 def login():
     global file_in_use
     
-    filens = helpers.get_fnames()
-    ques_count = len(filens)
+#    filens = helpers.get_fnames()
+#    ques_count = len(filens)
+    
+    
+    filess = helpers.get_fnames_good()
+    questcnt = len(filess)
+    #print (questcnt,filess)
+    
+    countl = []
+    for _,count in filess:
+        #allfiles.append(file)
+        countl.append(count)
+    
+    ques_count = sum(countl)
     
     
     if not session.get('logged_in'):
@@ -47,25 +88,30 @@ def login():
         return render_template('login.html', form=form,count=ques_count)
     
     
-    file_in_use = request.args.get('fname')
-    if file_in_use is None:
-        file_in_use = 'coco.png'        
-        allfiles = [row.filename for row in filens]
-        count = Counter(allfiles)
-        uniqef = list(count.keys())
-        p = list(count.values())
-        MAX_ANNOT = 6 # max no of annottaion for an image
-        p = [ max( MAX_ANNOT - ii , 0)  for ii in p]
-        if sum(p) !=0 :
-            p = [ i/sum(p) for i in p]
-            idx = choice(range(0,len(p)),p=p)
-        else:
-            idx = choice(range(0,len(p)))
+    file_in_use = request.args.get('fname','coco.png')       
+    #allfiles = [row.filename for row in filens]
+    
+    if choice(range(2),p=[0.4,0.6]) == 0:    
+        idx = choice(range(Ntr))
+        file_in_use = train[idx]
+    else:    
+        idx = choice(range(Nval))
+        file_in_use = val[idx]   
+#        count = Counter(allfiles)
+#        uniqef = list(count.keys())
+#        p = list(count.values())
+#        MAX_ANNOT = 6 # max no of annottaion for an image
+#        p = [ max( MAX_ANNOT - ii , 0)  for ii in p]
+#        if sum(p) !=0 :
+#            p = [ i/sum(p) for i in p]
+#            idx = choice(range(0,len(p)),p=p)
+#        else:
+#            idx = choice(range(0,len(p)))
+    
+   
         
-        file_in_use = uniqef[idx]
         
-        
-    print("....",file_in_use)
+    #print("....",file_in_use)
     imgs_dict = []
     imgq = {}
     #show file in random but haing many questions
@@ -87,14 +133,17 @@ def addqa():
     if request.method == 'POST':
         question = request.form['question'].lower()
         answer = request.form['answer'].lower()
+        #print (answer,type(answer))
         filename = request.form['filename']
         if form.validate():
             #if upload new file get newfilename
-            helpers.add_qa(filename,question, answer)
-            return json.dumps({'status': 'QA successful'})
+            if not answer.isdigit():
+                return json.dumps({'status': 'Answers should be numbers'})
+            if issimple(question):
+                return json.dumps({'status': 'Question not complex enough'})
+            helpers.add_qa(filename,question, answer)            
+            return json.dumps({'status': 'QA successful'})        
         return json.dumps({'status': 'Both fields required'})
-
-
 
 @app.route('/upload', methods=['POST'])
 def upload():

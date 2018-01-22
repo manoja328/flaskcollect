@@ -54,6 +54,13 @@ def get_fnames():
         return qas
 
 
+def get_fnames_good():   
+    with session_scope() as s:
+        #session.query(func.count(User.name), User.name).group_by(User.name).all()
+        qas = s.query( Complex.filename,func.count(Complex.filename)).group_by(Complex.filename).all()
+        #qas = (Complexfunc.count(User.name)).all()
+        return qas
+
 def change_user(**kwargs):
   username = session['username']
   with session_scope() as s:
