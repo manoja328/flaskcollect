@@ -88,25 +88,26 @@ def login():
         return render_template('login.html', form=form,count=ques_count)
     
     
-    file_in_use = request.args.get('fname','coco.png')       
+    file_in_use = request.args.get('fname')       
     #allfiles = [row.filename for row in filens]
     
-    if choice(range(2),p=[0.4,0.6]) == 0:    
-        idx = choice(range(Ntr))
-        file_in_use = train[idx]
-    else:    
-        idx = choice(range(Nval))
-        file_in_use = val[idx]   
-#        count = Counter(allfiles)
-#        uniqef = list(count.keys())
-#        p = list(count.values())
-#        MAX_ANNOT = 6 # max no of annottaion for an image
-#        p = [ max( MAX_ANNOT - ii , 0)  for ii in p]
-#        if sum(p) !=0 :
-#            p = [ i/sum(p) for i in p]
-#            idx = choice(range(0,len(p)),p=p)
-#        else:
-#            idx = choice(range(0,len(p)))
+    if file_in_use is None:    
+        if choice(range(2),p=[0.4,0.6]) == 0:    
+            idx = choice(range(Ntr))
+            file_in_use = train[idx]
+        else:    
+            idx = choice(range(Nval))
+            file_in_use = val[idx]   
+    #        count = Counter(allfiles)
+    #        uniqef = list(count.keys())
+    #        p = list(count.values())
+    #        MAX_ANNOT = 6 # max no of annottaion for an image
+    #        p = [ max( MAX_ANNOT - ii , 0)  for ii in p]
+    #        if sum(p) !=0 :
+    #            p = [ i/sum(p) for i in p]
+    #            idx = choice(range(0,len(p)),p=p)
+    #        else:
+    #            idx = choice(range(0,len(p)))
     
    
         
