@@ -73,6 +73,17 @@ $(document).ready(function() {
 
   })
 
+  $(document).on("click", "#faq-button", function() {
+    $.post({
+      type: "GET",
+      url: "/faq"
+       
+    });
+
+	window.location = '/faq';
+
+  })
+
 
   $(document).on("click", "#save", function() {
     $.post({

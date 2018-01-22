@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from collections import Counter
 from numpy.random import choice
 
-UPLOAD_FOLDER = '/home/manoj/Desktop/Flaskex-master/static/uploads'
+UPLOAD_FOLDER = '/home/manoj/flaskcollect/static/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 engine = db_connect()
@@ -27,6 +27,11 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def login():
     global file_in_use
+    
+    filens = helpers.get_fnames()
+    ques_count = len(filens)
+    
+    
     if not session.get('logged_in'):
         form = LoginForm(request.form)
         if request.method == 'POST':
@@ -39,13 +44,12 @@ def login():
               return json.dumps({'status': 'Login successful'})
             return json.dumps({'status': 'Invalid user/pass'})
           return json.dumps({'status': 'Both fields required'})
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form,count=ques_count)
     
     
     file_in_use = request.args.get('fname')
     if file_in_use is None:
         file_in_use = 'coco.png'        
-        filens = helpers.get_fnames()
         allfiles = [row.filename for row in filens]
         count = Counter(allfiles)
         uniqef = list(count.keys())
@@ -153,7 +157,16 @@ def settings():
     return render_template('settings.html', user=user)
   return redirect(url_for('login'))
 
+
+
+# -------- Settings ---------------------------------------------------------- #
+@app.route('/faq', methods=['GET', 'POST'])
+def faq():
+    return render_template('faq.html')
+
+
+
 # ======== Main ============================================================== #
 if __name__ == "__main__":
   app.secret_key = os.urandom(12) # Generic key for dev purposes only
-  app.run(host='0.0.0.0', port=5000,debug=True, use_reloader=True,threaded=True)
+  app.run(host='0.0.0.0', port=5000,debug=False, use_reloader=True,threaded=True)

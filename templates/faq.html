@@ -1,0 +1,43 @@
+{% extends "navbar.html" %}
+{% block content %}    
+<title>Flaskex</title>
+<section class="hero is-primary is-bold is-small">
+  <div class="hero-body">
+    <div class="container has-text-left-aligned">
+
+ <h1 class="title">Frequently Asked Questions?</h1> 
+<p class="title is-5"> 
+This website is intended to collect questions and ansers for Visual Question Answering.<br>
+Users will be shown images and asked to input both question and answer relevant to the iamges. Pressing <br>
+the next button will show random images from our database. Users also have option to upload their own images <br>
+using the ChooseFile button to select the image and pressing upload to push it to our database.<br><br>
+
+We aim to  collect <b>Couting Questions ( starts with How many) </b> i.e questions which have numerical answers.<br>
+Specifically, we encourage to ask hard questions which we call complex questions but simple questions are also nonethelsss valuable.</p>
+<hr>
+
+<p class="title is-4">&#x2022 <b>What are simple questions?</b></p>
+<p class="subtitle is-5">For eg. How may people are there?   Ans:2 </p> 
+<p class="subtitle is-5">How may dogs/people/cats/... are there ?   Ans:2 </p>
+<br>
+			
+<p class="title is-4">&#x2022 <b>What are complex questions?</b></p>
+<p class="subtitle is-5">These question are not just demanding simple count but with added attributes like color , position etc.</p>
+<p class="subtitle is-5">For eg. How may people are left of the person ?   Ans:1 </p> 
+<p class="subtitle is-5">How many blue dogs are there ?  Ans:1 </p>  <br>
+
+
+
+<p class="subtitle is-5">Any further queries can be redirected to <b>ma7583@rit.edu</b>.Thanks! </p>  <br>
+
+          <br>
+          <a href="/" class="form-button button is-primary is-inverted is-outlined">
+            <span>Exit</span>
+          </a>
+          <br>
+          <br>
+    
+    </div>
+  </div>
+</section>
+{% endblock %}
