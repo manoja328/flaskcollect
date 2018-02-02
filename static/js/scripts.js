@@ -28,12 +28,31 @@ var login = function() {
   })
 }
 
+var submitqa = function() {
+    $.post({
+      type: "POST",
+      url: "/addqa",
+      data: {"question": $("#question").val(), 
+             "answer": $("#answer").val(),
+             "filename": $("#imgname").text()},
+      success: function(response) {
+        var status = JSON.parse(response)['status']
+        if (status === 'QA successful') {location.reload()}
+        else {message(status, shake=false, id="question"); showred('question') ;showred('answer')}
+      }
+    })
+}
+
+
+
 $(document).ready(function() {
 
 
   
   $(document).on("click", "#login-button", login)
+  $(document).on("click", "#qa-button", submitqa)
   $(document).keypress(function(e) {if(e.which === 13) {login()}})
+  $(document).keypress(function(e) {if(e.which === 13) {submitqa()}})
   
   $(document).on("click", "#signup-button", function() {
     $.post({
@@ -51,20 +70,20 @@ $(document).ready(function() {
   })
 
 
-  $(document).on("click", "#qa-button", function() {
-    $.post({
-      type: "POST",
-      url: "/addqa",
-      data: {"question": $("#question").val(), 
-             "answer": $("#answer").val(),
-             "filename": $("#imgname").text()},
-      success: function(response) {
-        var status = JSON.parse(response)['status']
-        if (status === 'QA successful') {location.reload()}
-        else {message(status, shake=false, id="question"); showred('question') ;showred('answer')}
-      }
-    })
-  })
+  // $(document).on("click", "#qa-button", function() {
+  //   $.post({
+  //     type: "POST",
+  //     url: "/addqa",
+  //     data: {"question": $("#question").val(), 
+  //            "answer": $("#answer").val(),
+  //            "filename": $("#imgname").text()},
+  //     success: function(response) {
+  //       var status = JSON.parse(response)['status']
+  //       if (status === 'QA successful') {location.reload()}
+  //       else {message(status, shake=false, id="question"); showred('question') ;showred('answer')}
+  //     }
+  //   })
+  // })
 
   $(document).on("click", "#next-button", function() {
     $.post({

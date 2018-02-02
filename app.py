@@ -140,8 +140,8 @@ def addqa():
             #if upload new file get newfilename
             if not answer.isdigit():
                 return json.dumps({'status': 'Answers should be numbers'})
-            if issimple(question):
-                return json.dumps({'status': 'Question not complex enough'})
+            #if issimple(question):
+            #    return json.dumps({'status': 'Question not complex enough'})
             helpers.add_qa(filename,question, answer)            
             return json.dumps({'status': 'QA successful'})        
         return json.dumps({'status': 'Both fields required'})
